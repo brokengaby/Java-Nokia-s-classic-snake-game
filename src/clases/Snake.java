@@ -11,14 +11,16 @@ public class Snake extends Thread {
     private int score = 0;
 
     ArrayList<Square> body = new ArrayList<Square>();
+    private int speed_milis;
 
     //Constructor
-    public Snake(int size, int width_jpanel, int height_jpanel) {
+    public Snake(int size, int width_jpanel, int height_jpanel, int speed_milis) {
+        this.speed_milis = speed_milis;
         this.width_jpanel = width_jpanel;
         this.height_jpanel = height_jpanel;
         this.lenght = 1;
-        this.x = 50;
-        this.y = 50;
+        this.x = 0;
+        this.y = 0;
         this.size = size;
         this.movement = size;
         this.direction = RIGHT;
@@ -83,7 +85,7 @@ public class Snake extends Thread {
             move();
             refreshBody();
             try {
-                Thread.sleep(70);
+                Thread.sleep(speed_milis);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Snake.class.getName()).log(Level.SEVERE, null, ex);
             }

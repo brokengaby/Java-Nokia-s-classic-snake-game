@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class PanelSnake extends JPanel {
@@ -33,7 +34,7 @@ public class PanelSnake extends JPanel {
 
     //Colores
     Color color_background = new Color(6, 0, 12);
-    Color color_Fruit = new Color(254, 0, 156);
+    Color color_fruit = new Color(254, 0, 156);
     Color color_snake = new Color(207, 247, 255);
     Color color_grid = new Color(30, 30, 30);
 
@@ -41,8 +42,13 @@ public class PanelSnake extends JPanel {
     Font font_score = new Font("consolas", 1, 15);
     Font font_loose = new Font("consolas", 1, 25);
 
+    int speed_milis;
+    int grid_size;
+
     //Constructor
-    public PanelSnake() {
+    public PanelSnake(int speed_milis, int grid_size) {
+        this.speed_milis = speed_milis;
+        this.t_v = grid_size;
         //Tamaño
         this.setSize(600, 550);
         //Color de background
@@ -52,7 +58,7 @@ public class PanelSnake extends JPanel {
         //Doble buffer
         this.setDoubleBuffered(true);
         //Creando vibora
-        s = new Snake(t_v, getWidth(), getHeight());
+        s = new Snake(t_v, getWidth(), getHeight(), speed_milis);
         //Timer
         this.defineTimer();
         //Controlar con teclado
@@ -61,6 +67,7 @@ public class PanelSnake extends JPanel {
         this.createFruit();
         //La head capturada
         head = s.getSquares().get(0);
+        head.setX(9000);
     }
 
     //Pintar
@@ -75,11 +82,11 @@ public class PanelSnake extends JPanel {
             for (Square c : cds) {
                 g.fillRect(c.getX(), c.getY(), c.getSize(), c.getSize());
             }
-        }catch(java.util.ConcurrentModificationException ex){
+        } catch (java.util.ConcurrentModificationException ex) {
             System.out.println("");
         }
         //La Fruit
-        g.setColor(color_Fruit);
+        g.setColor(color_fruit);
         if (Fruit != null) {
             g.fillRect(Fruit.getX(), Fruit.getY(), t_v, t_v);
         }
@@ -99,10 +106,14 @@ public class PanelSnake extends JPanel {
             g.drawString("Score: " + s.getScore(), getWidth() - 125, 20);
         } //SI HEMOS PERDIDO}
         else {
-            g.setColor(Color.WHITE);
+            g.setColor(color_fruit);
             g.setFont(font_loose);
-            g.drawString("¡You Loose!, Score: " + s.getScore(), 160, this.getHeight() / 2 - 50);
-            g.drawString("Hit ENTER to restart", 175, this.getHeight() / 2);
+            if (s.getScore() > 0) {
+                g.drawString(" You Loose!, Score: " + s.getScore(), 160, this.getHeight() / 2 - 50);
+                g.drawString("Hit ENTER to restart", 175, this.getHeight() / 2);
+            } else {
+                g.drawString("Hit ENTER to play !", 160, this.getHeight() / 2 - 50);
+            }
         }
     }
 
@@ -122,7 +133,7 @@ public class PanelSnake extends JPanel {
             }
         };
         //Programando
-        timer.schedule(task, 100, 1);
+        timer.schedule(task, 10, this.speed_milis);
     }
 
     private void defineKeyListener() {
@@ -159,7 +170,7 @@ public class PanelSnake extends JPanel {
                 if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
                     if (!s.playing) {
                         //Creando vibora
-                        s = new Snake(t_v, getWidth(), getHeight());
+                        s = new Snake(t_v, getWidth(), getHeight(), speed_milis);
                         //Generamos la Fruit
                         createFruit();
                         //La head capturada

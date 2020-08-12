@@ -1,6 +1,5 @@
 package clases;
-
-import visual.WindowMain;
+import visual.MenuWindow;
 
 /*
     Made by brokengaby just for fun, in a saturday afternoon.
@@ -9,7 +8,7 @@ import visual.WindowMain;
 public class Main {
     
     public static void main(String[] args) {
-        WindowMain.main();
+        MenuWindow.main();
     }
     
 }
